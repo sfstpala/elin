@@ -62,7 +62,7 @@ def p_string(p):
 
 
 def p_error(p):
-    raise SyntaxError(p)
+    raise SyntaxError((p.lineno, p.value))
 
 
 tmp = tempfile.gettempdir()

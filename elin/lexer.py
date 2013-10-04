@@ -45,7 +45,9 @@ def t_newline(t):
 
 
 def t_error(t):
-    raise SyntaxError(t)
+    raise SyntaxError(
+        (t.lexer.lineno, t.value[:30] +
+         ("..." if len(t.value) > 31 else "")))
 
 
 lexer = ply.lex.lex()
