@@ -15,23 +15,32 @@
 
 import elin
 import elin.parser
+import elin.interpreter
 import sys
+import io
 import os
 import argparse
 
 
-def evaluate(text, do_exit=True):
+def evaluate(interpreter, text, do_exit=True):
     try:
         ast = elin.parser.parse(text)
     except SyntaxError as e:
         lineno, value = e.args[0]
-        print("syntax error in line {} (near {})".format(
+        print("SyntaxError: line {} (near {})".format(
             lineno, repr(value)), file=sys.stderr)
         if do_exit:
             sys.exit(1)
     else:
-        for i in ast:
-            print(i)  # TODO
+        try:
+            result = None
+            for i in ast:
+                result = interpreter.evaluate(i)
+        except Exception as e:
+            print(type(e).__name__, e, sep=": ", file=sys.stderr)
+            if do_exit:
+                sys.exit(1)
+        return result
 
 
 def unbalanced(t):
@@ -40,25 +49,44 @@ def unbalanced(t):
     return l != r
 
 
-def run(f, ps1=">>> ", ps2="... "):
-    if os.isatty(sys.stdin.fileno()) and f is sys.stdin:
+PS1 = ">>> "
+PS2 = "... "
+WLC = """Welcome to Elin, a ridiculous Scheme dialect. Elin is free software
+under the terms of the GPL (v3). See '/usr/share/doc/python3-elin/'."""
+
+
+def run(f):
+    interpreter = elin.interpreter.Interpreter()
+    try:
+        tty = os.isatty(sys.stdin.fileno())
+    except io.UnsupportedOperation:
+        tty = False
+    if tty and f is sys.stdin:  # pragma: no cover
+        print(WLC)
         try:
             import readline
         except ImportError:
             pass
         try:
             while True:
-                text = input(ps1)
-                t = tuple(elin.lexer.lex(text))
-                while unbalanced(t):
-                    text += "\n" + input(ps2)
+                text = input(PS1)
+                try:
                     t = tuple(elin.lexer.lex(text))
-                evaluate(text, do_exit=False)
+                    while unbalanced(t):
+                        text += "\n" + input(PS2)
+                        t = tuple(elin.lexer.lex(text))
+                    result = evaluate(interpreter, text, do_exit=False)
+                    if result is not None:
+                        print(result)
+                except SyntaxError as e:
+                    lineno, value = e.args[0]
+                    print("SyntaxError: line {} (near {})".format(
+                        lineno, repr(value)), file=sys.stderr)
         except (EOFError, KeyboardInterrupt):
             print(file=sys.stderr)
             sys.exit(0)
     else:
-        evaluate(f.read())
+        evaluate(interpreter, f.read())
 
 
 def parse_args(args):
@@ -84,5 +112,5 @@ def main(args=None):
     sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -15,7 +15,9 @@
 
 import ply.yacc
 import tempfile
+import re
 from elin.lexer import tokens
+from elin.lexer import t_DIGITS
 from elin.types import (
     List, Number, Symbol, String
 )
@@ -56,7 +58,10 @@ def p_quote(p):
 
 def p_identifier(p):
     ''' identifier : IDENTIFIER '''
-    p[0] = Symbol(p[1], lineno=p.lineno)
+    if re.match("^" + t_DIGITS + "$", p[1]):
+        p[0] = Number(p[1], lineno=p.lineno)
+    else:
+        p[0] = Symbol(p[1], lineno=p.lineno)
 
 
 def p_string(p):
@@ -65,7 +70,7 @@ def p_string(p):
 
 
 def p_error(p):
-    raise SyntaxError((p.lineno, p.value))
+    raise SyntaxError((p.lineno, p.value) if p is not None else (0, None))
 
 
 tmp = tempfile.gettempdir()

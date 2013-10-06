@@ -28,12 +28,15 @@ class TypesTest(unittest.TestCase):
         self.assertEqual(Symbol("test"), Symbol("test"))
         self.assertNotEqual(Symbol("test"), "test")
         self.assertNotEqual(Symbol("test"), String("test"))
+        self.assertEqual(repr(Symbol("x")), "x")
 
     def test_list(self):
         self.assertEqual(List("test"), List("test"))
         self.assertNotEqual(List("test"), ["test"])
         self.assertNotEqual(List("test"), List("test", 1))
         self.assertIsInstance(List() + List(), List)
+        self.assertEqual(List(1) < List(), [1] < [])
+        self.assertEqual(repr(List(1)), "(1)")
 
     def test_string(self):
         self.assertEqual(repr(String("a\"b\n\r\v\t")), '"a\\"b\\n\\r\\v\\t"')
@@ -48,6 +51,7 @@ class TypesTest(unittest.TestCase):
         self.assertEqual(Number(2) * Number(2), Number(4))
         self.assertEqual(Number(2) / Number(2), Number(1))
         self.assertEqual(Number(10) // Number(3), Number(3))
+        self.assertEqual(Number(10) % Number(3), Number(1))
         self.assertEqual(Number(3) ** Number(2), Number(9))
         for i in range(4):
             for j in range(4):
@@ -57,3 +61,4 @@ class TypesTest(unittest.TestCase):
                 self.assertEqual(Number(i) != Number(j), i != j)
                 self.assertEqual(Number(i) >= Number(j), i >= j)
                 self.assertEqual(Number(i) > Number(j), i > j)
+        self.assertEqual(repr(Number(100)), "100")

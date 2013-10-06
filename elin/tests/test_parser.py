@@ -25,6 +25,7 @@ class TestParser(unittest.TestCase):
     def test_number(self):
         self.assertEqual(parse("1"), List(Number(1)))
         self.assertEqual(parse("1234"), List(Number(1234)))
+        self.assertEqual(parse("-1"), List(Number(-1)))
 
     def test_exprs(self):
         self.assertEqual(parse("12 3"), List(
@@ -75,3 +76,6 @@ class TestParser(unittest.TestCase):
             List(Symbol('f'), Number(12)),
             List(Symbol('print'),
                  List(Symbol('quote'), String("hello world")))))
+
+    def test_error(self):
+        self.assertRaises(SyntaxError, parse, "(((")

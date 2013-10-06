@@ -53,3 +53,6 @@ class TestLexer(unittest.TestCase):
         t = tuple((i.type, i.value) for i in lex('world*'))
         self.assertEqual(t, (
             ("IDENTIFIER", "world*"), ))
+
+    def test_error(self):
+        self.assertRaises(SyntaxError, lambda: tuple(lex("\"hello")))

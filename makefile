@@ -21,6 +21,10 @@ test: all
 	@python3 setup.py -q test
 	@pep8 .
 
+coverage:
+	coverage3 run --source=. setup.py -q test
+	coverage3 html
+
 dist:
 	@python3 setup.py sdist
 
@@ -40,7 +44,7 @@ endif
 
 clean:
 ifndef DEB_HOST_ARCH
-	@rm -rfv elin.egg-info/ build/ dist/
+	@rm -rfv elin.egg-info/ build/ dist/ .coverage htmlcov/
 endif
 	@find -depth -name "__pycache__" -type d -exec rm -rfv {} \;
 

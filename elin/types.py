@@ -32,6 +32,9 @@ class Symbol(Expression):
     def __eq__(self, other):
         return isinstance(other, Symbol) and self.value == other.value
 
+    def __hash__(self):
+        return hash(self.value)
+
 
 @functools.total_ordering
 class List(Expression):
@@ -50,6 +53,12 @@ class List(Expression):
 
     def __add__(self, other):
         return List(*(self.value + other.value), lineno=self.lineno)
+
+    def __getitem__(self, i):
+        return self.value[i]
+
+    def __len__(self):
+        return len(self.value)
 
     def __iter__(self):
         return (i for i in self.value)
@@ -111,3 +120,21 @@ class Number(Expression):
 
     def __pow__(self, other):
         return Number(self.value ** other.value, lineno=self.lineno)
+
+
+class Procedure:
+
+    def __init__(self, function, argn):
+        self.function, self.argn = function, argn
+
+    def __repr__(self):
+        return "<procedure>"
+
+    def __call__(self, *args):
+        if len(self.argn) != len(args):
+            raise TypeError(
+                ("procedure() takes {} positional "
+                 "argument{} but {} were given").format(
+                     len(self.argn), "s" if len(self.argn) != 1 else "",
+                     len(args)))
+        return self.function(*args)

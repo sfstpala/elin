@@ -29,8 +29,8 @@ t_LPAREN = "\\("
 t_RPAREN = "\\)"
 t_QUOTE = "'"
 t_STRING = '\"(\\\"|[^\\]?[^\"])*\"'
-t_IDENTIFIER = "[^()';\"\\\\\r\n\v\t\d ]+"
-t_DIGITS = r"\d+"
+t_IDENTIFIER = "[^()';\"\\\\\r\n\v\t\d ][^()';\"\\\\\r\n\v\t ]*"
+t_DIGITS = r"[+-]?\d+"
 t_ignore = "\r\v\t "
 
 

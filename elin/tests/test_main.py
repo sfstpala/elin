@@ -15,6 +15,9 @@
 
 import elin
 import elin.__main__
+import elin.lexer
+import elin.interpreter
+import elin.types
 
 import unittest
 import io
@@ -37,3 +40,27 @@ class MainTest(unittest.TestCase):
     def test_version(self):
         self.assertRaises(SystemExit, elin.__main__.main, ["--version"])
         self.assertRegex(sys.stderr.getvalue(), r"^\d+\.\d+\.\d+$")
+
+    def test_errno2(self):
+        self.assertRaises(SystemExit, elin.__main__.main,
+                          ["does-not-exist.txt"])
+        self.assertRegex(sys.stderr.getvalue(),
+                         r"\[Errno 2\] No such file or directory:")
+
+    def test_run(self):
+        self.assertRaises(SystemExit, elin.__main__.main, ["/dev/null"])
+        self.assertEqual(sys.stderr.getvalue(), "")
+
+    def test_unbalanced(self):
+        self.assertTrue(elin.__main__.unbalanced(elin.lexer.lex("((")))
+
+    def test_evaluate(self):
+        interpreter = elin.interpreter.Interpreter()
+        self.assertRaises(SystemExit, elin.__main__.evaluate, interpreter,
+                          "))((", do_exit=True)
+        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line 1")
+        self.assertIsInstance(elin.__main__.evaluate(
+            interpreter, "12", do_exit=True), elin.types.Number)
+        self.assertRaises(SystemExit, elin.__main__.evaluate, interpreter,
+                          "(apply)", do_exit=True)
+        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line 1")
