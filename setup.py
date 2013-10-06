@@ -42,5 +42,6 @@ setuptools.setup(
     ],
     data_files=[
         ("share/man/man1", ["debian/elin.1"]),
+        ("share/doc/elin", ["doc/ref.md"]),
     ],
 )

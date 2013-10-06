@@ -62,3 +62,4 @@ class TypesTest(unittest.TestCase):
                 self.assertEqual(Number(i) >= Number(j), i >= j)
                 self.assertEqual(Number(i) > Number(j), i > j)
         self.assertEqual(repr(Number(100)), "100")
+        self.assertEqual(repr(Number(1.4)), "1.4")

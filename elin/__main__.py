@@ -51,8 +51,11 @@ def unbalanced(t):
 
 PS1 = ">>> "
 PS2 = "... "
-WLC = """Welcome to Elin, a ridiculous Scheme dialect. Elin is free software
-under the terms of the GPL (v3). See '/usr/share/doc/elin/'."""
+WLC = "\n".join((
+    "Welcome to Elin, a ridiculous Scheme dialect. Elin is free software",
+    "under the terms of the GPL (v3). See '/usr/share/doc/elin/copyright'.",
+    "The Elin reference manual is avaible at '/usr/share/doc/elin/ref.md'.",
+))
 
 
 def run(f):
