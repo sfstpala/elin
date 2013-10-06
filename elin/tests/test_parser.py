@@ -26,6 +26,8 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parse("1"), List(Number(1)))
         self.assertEqual(parse("1234"), List(Number(1234)))
         self.assertEqual(parse("-1"), List(Number(-1)))
+        self.assertEqual(parse("1.0"), List(Number(1.0)))
+        self.assertEqual(parse("-1.0"), List(Number(-1.0)))
 
     def test_exprs(self):
         self.assertEqual(parse("12 3"), List(

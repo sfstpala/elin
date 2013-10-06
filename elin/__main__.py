@@ -52,7 +52,7 @@ def unbalanced(t):
 PS1 = ">>> "
 PS2 = "... "
 WLC = """Welcome to Elin, a ridiculous Scheme dialect. Elin is free software
-under the terms of the GPL (v3). See '/usr/share/doc/python3-elin/'."""
+under the terms of the GPL (v3). See '/usr/share/doc/elin/'."""
 
 
 def run(f):

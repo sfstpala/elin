@@ -27,13 +27,19 @@ setuptools.setup(
     author="Stefano Palazzo",
     author_email="stefano.palazzo@gmail.com",
     url="https://github.com/sfstpala/elin/",
-    packages=["elin"],
+    packages=["elin", "elin.tests"],
+    ext_modules=[setuptools.Extension(
+        'elin.fast_interpreter',
+        sources=["elin/fast_interpreter.c"])],
     test_suite="elin.tests",
     entry_points={
         "console_scripts": [
             "elin = elin.__main__:main",
         ],
     },
+    install_requires=[
+        "ply >=3.4",
+    ],
     data_files=[
         ("share/man/man1", ["debian/elin.1"]),
     ],

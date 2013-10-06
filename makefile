@@ -18,7 +18,7 @@ elin.egg-info/:
 	@python3 setup.py egg_info
 
 test: all
-	@python3 setup.py -q test
+	@python3 setup.py test -q
 	@pep8 .
 
 coverage:
@@ -32,7 +32,7 @@ deb: distclean
 	@dpkg-buildpackage -rfakeroot -D -us -uc -S -tc
 	@dpkg-buildpackage -rfakeroot -D -us -uc -b -tc
 	@lintian -E --pedantic \
-	    ../python3-elin_*.deb ../elin_*.dsc ../elin_*.changes
+	    ../elin_*.deb ../elin_*.dsc ../elin_*.changes
 
 ifdef DEB_HOST_ARCH
 DESTDIR ?= /
@@ -44,12 +44,12 @@ endif
 
 clean:
 ifndef DEB_HOST_ARCH
-	@rm -rfv elin.egg-info/ build/ dist/ .coverage htmlcov/
+	@rm -rfv elin/*.so elin.egg-info/ build/ dist/ .coverage htmlcov/
 endif
 	@find -depth -name "__pycache__" -type d -exec rm -rfv {} \;
 
 ifndef DEB_HOST_ARCH
 distclean: clean
 	@rm -rfv ../elin_*.deb ../elin_*.dsc ../elin_*.changes \
-	    ../elin_*.tar.gz ../elin_*.build ../python3-elin_*.deb
+	    ../elin_*.tar.gz ../elin_*.build ../elin_*.deb
 endif

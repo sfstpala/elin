@@ -49,7 +49,7 @@ class TypesTest(unittest.TestCase):
         self.assertEqual(Number(2) + Number(2), Number(4))
         self.assertEqual(Number(2) - Number(2), Number(0))
         self.assertEqual(Number(2) * Number(2), Number(4))
-        self.assertEqual(Number(2) / Number(2), Number(1))
+        self.assertEqual(Number(10) / Number(3), Number(10.0 / 3.0))
         self.assertEqual(Number(10) // Number(3), Number(3))
         self.assertEqual(Number(10) % Number(3), Number(1))
         self.assertEqual(Number(3) ** Number(2), Number(9))

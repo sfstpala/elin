@@ -89,7 +89,7 @@ class String(Expression):
 class Number(Expression):
 
     def __init__(self, value, lineno=0):
-        self.value, self.lineno = int(value), lineno
+        self.value, self.lineno = float(value), lineno
 
     def __eq__(self, other):
         return type(other) is Number and self.value == other.value
@@ -98,6 +98,8 @@ class Number(Expression):
         return type(other) is Number and self.value <= other.value
 
     def __repr__(self):
+        if int(self.value) == self.value:
+            return repr(int(self.value))
         return repr(self.value)
 
     def __add__(self, other):
