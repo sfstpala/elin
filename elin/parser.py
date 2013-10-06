@@ -16,15 +16,18 @@
 import ply.yacc
 import tempfile
 from elin.lexer import tokens
+from elin.types import (
+    List, Number, Symbol, String
+)
 
 
 def p_exprs(p):
     ''' exprs :
               | expr exprs '''
     if len(p) == 1:
-        p[0] = []
+        p[0] = List(lineno=p.lineno)
     else:
-        p[0] = [p[1]] + p[2]
+        p[0] = List(p[1], lineno=p.lineno) + p[2]
 
 
 def p_expr(p):
@@ -38,27 +41,27 @@ def p_expr(p):
 
 def p_number(p):
     ''' number : DIGITS '''
-    p[0] = int(p[1])
+    p[0] = Number(p[1], lineno=p.lineno)
 
 
 def p_list(p):
     ''' list : LPAREN exprs RPAREN '''
-    p[0] = p[2]
+    p[0] = List(*p[2], lineno=p.lineno)
 
 
 def p_quote(p):
     ''' quote : QUOTE expr '''
-    p[0] = ["quote", p[2]]
+    p[0] = List(Symbol("quote"), p[2], lineno=p.lineno)
 
 
 def p_identifier(p):
     ''' identifier : IDENTIFIER '''
-    p[0] = p[1]
+    p[0] = Symbol(p[1], lineno=p.lineno)
 
 
 def p_string(p):
     ''' string : STRING '''
-    p[0] = p[1][1:-1].replace("\\\"", '"').encode("utf8")
+    p[0] = String(p[1][1:-1].replace("\\\"", '"'), lineno=p.lineno)
 
 
 def p_error(p):
@@ -72,4 +75,4 @@ parser = ply.yacc.yacc(debug=False, outputdir=tmp)
 def parse(text):
     global parser
     parser = ply.yacc.yacc(debug=False, outputdir=tmp)
-    return parser.parse(text)
+    return List(*parser.parse(text))
