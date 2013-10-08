@@ -20,6 +20,10 @@ import sys
 import io
 import os
 import argparse
+try:
+    import readline
+except ImportError:  # pragma: no cover
+    pass
 
 
 def evaluate(interpreter, text, do_exit=True):
@@ -58,25 +62,21 @@ WLC = "\n".join((
 ))
 
 
-def run(f):
+def run(f, input_fn=input, force_tty=False, once=False):
     interpreter = elin.interpreter.Interpreter()
     try:
         tty = os.isatty(sys.stdin.fileno())
     except io.UnsupportedOperation:
         tty = False
-    if tty and f is sys.stdin:  # pragma: no cover
+    if force_tty or (tty and f is sys.stdin):
         print(WLC)
         try:
-            import readline
-        except ImportError:
-            pass
-        try:
             while True:
-                text = input(PS1)
+                text = input_fn(PS1)
                 try:
                     t = tuple(elin.lexer.lex(text))
                     while unbalanced(t):
-                        text += "\n" + input(PS2)
+                        text += "\n" + input_fn(PS2)
                         t = tuple(elin.lexer.lex(text))
                     result = evaluate(interpreter, text, do_exit=False)
                     if result is not None:
@@ -85,7 +85,9 @@ def run(f):
                     lineno, value = e.args[0]
                     print("SyntaxError: line {} (near {})".format(
                         lineno, repr(value)), file=sys.stderr)
-        except (EOFError, KeyboardInterrupt):
+                if once:
+                    break
+        except (EOFError, KeyboardInterrupt):  # pragma: no cover
             print(file=sys.stderr)
             sys.exit(0)
     else:

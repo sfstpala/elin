@@ -18,11 +18,12 @@ elin.egg-info/:
 	@python3 setup.py egg_info
 
 test: all
-	@python3 setup.py test -q
+	@python3 setup.py test
 	@pep8 .
 
 coverage:
 	coverage3 run --source=. setup.py -q test
+	coverage3 report
 	coverage3 html
 
 dist:

@@ -64,3 +64,37 @@ class MainTest(unittest.TestCase):
         self.assertRaises(SystemExit, elin.__main__.evaluate, interpreter,
                           "(apply)", do_exit=True)
         self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line 1")
+
+    def gen_test_interactive(self, code, expected):
+        stdin, stdout, stderr = io.StringIO(code), sys.stdout, sys.stderr
+
+        def input_fn(prompt):
+            print(prompt, end="")
+            sys.stdout.flush()
+            i = stdin.readline()
+            print(i)
+            return i
+        try:
+            sys.stdout = sys.stderr = io.StringIO()
+            res = elin.__main__.run(
+                stdin, input_fn=input_fn,
+                force_tty=True, once=True)
+            output = sys.stdout.getvalue()
+            self.assertIn(elin.__main__.WLC + "\n", output)
+            output = output.replace(elin.__main__.WLC + "\n", "")
+            self.assertEqual(output, expected)
+        finally:
+            sys.stdout, sys.stderr = stdout, stderr
+
+    def test_interactive(self):
+        self.gen_test_interactive(
+            "((lambda (x) x)\n100)",
+            ">>> ((lambda (x) x)\n\n"
+            "... 100)\n"
+            "100\n")
+
+    def test_interactive_syntax_error(self):
+        self.gen_test_interactive(
+            "\"hello",
+            ">>> \"hello\n"
+            "SyntaxError: line 1 (near '\"hello')\n")
