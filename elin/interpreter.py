@@ -22,6 +22,18 @@ class Memory:
 
     def __init__(self):
         self.data = [{}]
+        self.data[-1].update({
+            Symbol(k): Procedure(v, List(
+                Symbol("x"))) for k, v in ({
+                    "zero?": lambda x: x == Number(0),
+                    "print": lambda x: print(x),
+                }).items()})
+        self.data[-1].update({
+            Symbol(k): Procedure(v, List(
+                Symbol("x"), Symbol("y"))) for k, v in ({
+                    "-": lambda x, y: x - y,
+                    "*": lambda x, y: x * y,
+                }).items()})
 
     def enter_scope(self):
         self.data.append({})
@@ -102,6 +114,21 @@ class Interpreter:
             return fn(*args)
         raise SyntaxError(expr)
 
+    def special_cond(self, expr):
+        if len(expr) == 3:
+            cond = expr[1]
+            true_case = expr[2]
+            else_case = List(Symbol("quote"), List())
+        elif len(expr) == 4:
+            cond = expr[1]
+            true_case = expr[2]
+            else_case = expr[3]
+        else:
+            raise SyntaxError(expr)
+        if self.evaluate(cond):
+            return self.evaluate(true_case)
+        return self.evaluate(else_case)
+
     def evaluate(self, expr):
         self.memory.enter_scope()
         if isinstance(expr, List):
@@ -115,6 +142,8 @@ class Interpreter:
                 result = self.special_eval(expr)
             elif expr and expr[0] == Symbol("apply"):
                 result = self.special_apply(expr)
+            elif expr and expr[0] == Symbol("cond"):
+                result = self.special_cond(expr)
             else:
                 result = self.special_apply(List(Symbol('apply'), *expr))
         elif isinstance(expr, Number):

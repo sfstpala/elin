@@ -49,17 +49,17 @@ class InterpreterTest(unittest.TestCase):
 
     def test_define(self):
         i = self.evaluate("(define x 0)")
-        self.assertEqual(i.memory.data, [{Symbol('x'): Number(0)}])
+        self.assertEqual(i.memory.get(Symbol("x")), Number(0))
         i = self.evaluate("(define ((x 0) (y 1))) x y")
-        self.assertEqual(i.memory.data, [{
-            Symbol('x'): Number(0), Symbol('y'): Number(1)}])
+        self.assertEqual(i.memory.get(Symbol("x")), Number(0))
+        self.assertEqual(i.memory.get(Symbol("y")), Number(1))
         i = self.evaluate("(define ((x 0) (y 1))) (define z x)")
-        self.assertEqual(i.memory.data, [{
-            Symbol('x'): Number(0), Symbol('y'): Number(1),
-            Symbol('z'): Number(0)}])
+        self.assertEqual(i.memory.get(Symbol("x")), Number(0))
+        self.assertEqual(i.memory.get(Symbol("y")), Number(1))
+        self.assertEqual(i.memory.get(Symbol("z")), Number(0))
         i = self.evaluate("(define ((x 0) (y 1)) (define z x) z)")
-        self.assertEqual(i.memory.data, [{
-            Symbol('x'): Number(0), Symbol('y'): Number(1)}])
+        self.assertEqual(i.memory.get(Symbol("x")), Number(0))
+        self.assertEqual(i.memory.get(Symbol("y")), Number(1))
         self.assertRaises(SyntaxError, self.evaluate, "(define)")
         self.assertRaises(SyntaxError, self.evaluate, "(define f)")
         self.assertRaises(SyntaxError, self.evaluate, "(define (()) 1)")
@@ -88,6 +88,26 @@ class InterpreterTest(unittest.TestCase):
         self.assertRaises(SyntaxError, self.evaluate, "(lambda)")
         self.assertRaises(SyntaxError, self.evaluate, "(lambda x x)")
         self.assertRaises(SyntaxError, self.evaluate, "(lambda 1)")
+
+    def test_cond(self):
+        x = self.evaluate(
+            "(define x (cond 0 100))").memory.data[-1][Symbol("x")]
+        self.assertIsInstance(x, List)
+        self.assertFalse(x)
+        x = self.evaluate(
+            "(define x (cond 1 100))").memory.data[-1][Symbol("x")]
+        self.assertIsInstance(x, Number)
+        self.assertEqual(x, Number(100))
+        x = self.evaluate(
+            "(define x (cond 0 100 -1))").memory.data[-1][Symbol("x")]
+        self.assertIsInstance(x, Number)
+        self.assertEqual(x, Number(-1))
+        x = self.evaluate(
+            "(define x (cond 1 100 -1))").memory.data[-1][Symbol("x")]
+        self.assertIsInstance(x, Number)
+        self.assertEqual(x, Number(100))
+        self.assertRaises(SyntaxError, self.evaluate, "(cond c)")
+        self.assertRaises(SyntaxError, self.evaluate, "(cond c t f x)")
 
     def test_lambda_multiarg(self):
         f = self.evaluate(

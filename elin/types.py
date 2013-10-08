@@ -63,6 +63,9 @@ class List(Expression):
     def __iter__(self):
         return (i for i in self.value)
 
+    def __bool__(self):
+        return bool(self.value)
+
 
 class String(Expression):
 
@@ -83,6 +86,9 @@ class String(Expression):
 
     def __add__(self, other):
         return String(self.value + other.value, lineno=self.lineno)
+
+    def __bool__(self):
+        return bool(self.value)
 
 
 @functools.total_ordering
@@ -122,6 +128,9 @@ class Number(Expression):
 
     def __pow__(self, other):
         return Number(self.value ** other.value, lineno=self.lineno)
+
+    def __bool__(self):
+        return bool(self.value)
 
 
 class Procedure:

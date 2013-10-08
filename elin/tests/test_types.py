@@ -29,6 +29,8 @@ class TypesTest(unittest.TestCase):
         self.assertNotEqual(Symbol("test"), "test")
         self.assertNotEqual(Symbol("test"), String("test"))
         self.assertEqual(repr(Symbol("x")), "x")
+        self.assertTrue(Symbol(""))
+        self.assertTrue(Symbol("xyz"))
 
     def test_list(self):
         self.assertEqual(List("test"), List("test"))
@@ -37,10 +39,14 @@ class TypesTest(unittest.TestCase):
         self.assertIsInstance(List() + List(), List)
         self.assertEqual(List(1) < List(), [1] < [])
         self.assertEqual(repr(List(1)), "(1)")
+        self.assertFalse(List())
+        self.assertTrue(List(Symbol("xyz")))
 
     def test_string(self):
         self.assertEqual(repr(String("a\"b\n\r\v\t")), '"a\\"b\\n\\r\\v\\t"')
         self.assertIsInstance(String("a") + String("b"), String)
+        self.assertFalse(String(""))
+        self.assertTrue(String("xyz"))
 
     def test_number(self):
         self.assertEqual(Number(0), Number(0))
@@ -63,3 +69,5 @@ class TypesTest(unittest.TestCase):
                 self.assertEqual(Number(i) > Number(j), i > j)
         self.assertEqual(repr(Number(100)), "100")
         self.assertEqual(repr(Number(1.4)), "1.4")
+        self.assertFalse(Number(0))
+        self.assertTrue(Number(123))
