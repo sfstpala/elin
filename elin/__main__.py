@@ -53,8 +53,8 @@ def unbalanced(t):
     return l != r
 
 
-PS1 = ">>> "
-PS2 = "... "
+PS1 = "> "
+PS2 = ".  "
 WLC = "\n".join((
     "Welcome to Elin, a ridiculous Scheme dialect. Elin is free software",
     "under the terms of the GPL (v3). See '/usr/share/doc/elin/copyright'.",
@@ -80,7 +80,7 @@ def run(f, input_fn=input, force_tty=False, once=False):
                         t = tuple(elin.lexer.lex(text))
                     result = evaluate(interpreter, text, do_exit=False)
                     if result is not None:
-                        print(result)
+                        print("=", result)
                 except SyntaxError as e:
                     lineno, value = e.args[0]
                     print("SyntaxError: line {} (near {})".format(

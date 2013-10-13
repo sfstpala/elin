@@ -89,12 +89,12 @@ class MainTest(unittest.TestCase):
     def test_interactive(self):
         self.gen_test_interactive(
             "((lambda (x) x)\n100)",
-            ">>> ((lambda (x) x)\n\n"
-            "... 100)\n"
-            "100\n")
+            "{}((lambda (x) x)\n\n"
+            "{}100)\n"
+            "= 100\n".format(elin.__main__.PS1, elin.__main__.PS2))
 
     def test_interactive_syntax_error(self):
         self.gen_test_interactive(
             "\"hello",
-            ">>> \"hello\n"
-            "SyntaxError: line 1 (near '\"hello')\n")
+            "{}\"hello\n"
+            "SyntaxError: line 1 (near '\"hello')\n".format(elin.__main__.PS1))
