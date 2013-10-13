@@ -15,7 +15,7 @@
 
 import unittest
 from elin.types import (
-    List, Number, Symbol, String
+    List, Number, Symbol, String, Procedure
 )
 
 
@@ -31,6 +31,7 @@ class TypesTest(unittest.TestCase):
         self.assertEqual(repr(Symbol("x")), "x")
         self.assertTrue(Symbol(""))
         self.assertTrue(Symbol("xyz"))
+        self.assertFalse(Symbol("#f"))
 
     def test_list(self):
         self.assertEqual(List("test"), List("test"))
@@ -50,6 +51,7 @@ class TypesTest(unittest.TestCase):
 
     def test_number(self):
         self.assertEqual(Number(0), Number(0))
+        self.assertEqual(Number(Number(0)), Number(0))
         self.assertNotEqual(Number(0), Number(1))
         self.assertIsInstance(Number(1) + Number(1), Number)
         self.assertEqual(Number(2) + Number(2), Number(4))
@@ -71,3 +73,19 @@ class TypesTest(unittest.TestCase):
         self.assertEqual(repr(Number(1.4)), "1.4")
         self.assertFalse(Number(0))
         self.assertTrue(Number(123))
+        self.assertEqual(-Number(10), Number(-10))
+        self.assertEqual(-Number(-10), Number(10))
+        self.assertEqual(abs(Number(10)), Number(10))
+        self.assertEqual(abs(Number(-10)), Number(10))
+        self.assertEqual(Number(1.5).floor(), Number(1))
+        self.assertEqual(Number(0.5).floor(), Number(0))
+        self.assertEqual(Number(-0.5).floor(), Number(0))
+
+    def test_procedure(self):
+        p = Procedure(lambda: Symbol("#f"), List())
+        self.assertEqual(p.argn, List())
+        self.assertEqual(str(p), "<procedure (lambda () ...)>")
+        p = Procedure(lambda x, y, z: Symbol("#f"), List(
+            Symbol("x"), Symbol("y"), Symbol("z")))
+        self.assertEqual(p.argn, List(Symbol("x"), Symbol("y"), Symbol("z")))
+        self.assertEqual(str(p), "<procedure (lambda (x y z) ...)>")

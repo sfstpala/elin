@@ -16,24 +16,14 @@
 from elin.types import (
     List, Number, Symbol, String, Procedure
 )
+from elin.stdlib import builtins
 
 
 class Memory:
 
     def __init__(self):
         self.data = [{}]
-        self.data[-1].update({
-            Symbol(k): Procedure(v, List(
-                Symbol("x"))) for k, v in ({
-                    "zero?": lambda x: x == Number(0),
-                    "print": lambda x: print(x),
-                }).items()})
-        self.data[-1].update({
-            Symbol(k): Procedure(v, List(
-                Symbol("x"), Symbol("y"))) for k, v in ({
-                    "-": lambda x, y: x - y,
-                    "*": lambda x, y: x * y,
-                }).items()})
+        self.data[-1].update(builtins)
 
     def enter_scope(self):
         self.data.append({})

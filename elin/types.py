@@ -35,6 +35,9 @@ class Symbol(Expression):
     def __hash__(self):
         return hash(self.value)
 
+    def __bool__(self):
+        return self.value != "#f"
+
 
 @functools.total_ordering
 class List(Expression):
@@ -95,6 +98,8 @@ class String(Expression):
 class Number(Expression):
 
     def __init__(self, value, lineno=0):
+        if isinstance(value, Number):
+            value = value.value
         self.value, self.lineno = float(value), lineno
 
     def __eq__(self, other):
@@ -129,6 +134,15 @@ class Number(Expression):
     def __pow__(self, other):
         return Number(self.value ** other.value, lineno=self.lineno)
 
+    def __neg__(self):
+        return Number(-self.value, lineno=self.lineno)
+
+    def __abs__(self):
+        return Number(abs(self.value), lineno=self.lineno)
+
+    def floor(self):
+        return Number(int(self.value))
+
     def __bool__(self):
         return bool(self.value)
 
@@ -139,7 +153,8 @@ class Procedure:
         self.function, self.argn = function, argn
 
     def __repr__(self):
-        return "<procedure>"
+        return "<procedure (lambda ({}) ...)>".format(
+            " ".join(str(i) for i in self.argn))
 
     def __call__(self, *args):
         if len(self.argn) != len(args):

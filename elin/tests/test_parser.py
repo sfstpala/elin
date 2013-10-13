@@ -56,7 +56,7 @@ class TestParser(unittest.TestCase):
     def test_string(self):
         self.assertEqual(parse('""'), List(
             String("")))
-        self.assertEqual(parse('"\""'), List(
+        self.assertEqual(parse(r'"\""'), List(
             String("\"")))
         self.assertEqual(parse('"\\"" one'), List(
             String('"'),
@@ -65,6 +65,8 @@ class TestParser(unittest.TestCase):
             String("hello world")))
         self.assertEqual(parse(r'"hello \"world\""'), List(
             String("hello \"world\"")))
+        self.assertEqual(parse(r'"hello" "world"'), List(
+            String("hello"), String("world")))
 
     def test_program(self):
         self.assertEqual(parse("""
