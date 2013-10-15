@@ -58,12 +58,12 @@ class MainTest(unittest.TestCase):
         interpreter = elin.interpreter.Interpreter()
         self.assertRaises(SystemExit, elin.__main__.evaluate, interpreter,
                           "))((", do_exit=True)
-        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line 1")
+        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line \d+")
         self.assertIsInstance(elin.__main__.evaluate(
             interpreter, "12", do_exit=True), elin.types.Number)
         self.assertRaises(SystemExit, elin.__main__.evaluate, interpreter,
                           "(apply)", do_exit=True)
-        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line 1")
+        self.assertRegex(sys.stderr.getvalue(), r"[eE]rror.+line \d+")
 
     def gen_test_interactive(self, code, expected):
         stdin, stdout, stderr = io.StringIO(code), sys.stdout, sys.stderr
