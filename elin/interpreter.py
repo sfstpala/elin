@@ -49,7 +49,7 @@ class Interpreter:
     def __init__(self):
         self.memory = Memory()
 
-    def special_define(self, expr):
+    def special_define(self, expr, let_form=False):
         if len(expr) == 3 and isinstance(expr[1], Symbol):
             result = self.evaluate(expr[2])
             self.memory.set_outer(expr[1], result)
@@ -59,7 +59,10 @@ class Interpreter:
             result = List()
             for k, v in expr[1]:
                 result = self.evaluate(v)
-                self.memory.set_outer(k, result)
+                if let_form:
+                    self.memory.set_local(k, result)
+                else:
+                    self.memory.set_outer(k, result)
             for e in expr[2:]:
                 result = self.evaluate(e)
             return result
@@ -70,6 +73,9 @@ class Interpreter:
                 Symbol("lambda"), argn, *body))
             return self.special_define(expr)
         raise SyntaxError(expr)
+
+    def special_let(self, expr):
+        return self.special_define(expr, let_form=True)
 
     def special_lambda(self, expr):
         if len(expr) >= 2 and isinstance(expr[1], List) and all(
@@ -126,6 +132,8 @@ class Interpreter:
                 result = self.special_lambda(expr)
             elif expr and expr[0] == Symbol("define"):
                 result = self.special_define(expr)
+            elif expr and expr[0] == Symbol("let"):
+                result = self.special_let(expr)
             elif expr and expr[0] == Symbol("quote"):
                 result = self.special_quote(expr)
             elif expr and expr[0] == Symbol("eval"):

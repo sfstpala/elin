@@ -87,7 +87,7 @@ class StdlibTest(unittest.TestCase):
                         Number(p), Number(q)), Symbol("#t")
                     if p != q else Symbol("#f"), (p, q))
                 self.assertEqual(
-                    builtins[Symbol("==")](
+                    builtins[Symbol("=")](
                         Number(p), Number(q)), Symbol("#t")
                     if p == q else Symbol("#f"), (p, q))
                 self.assertEqual(

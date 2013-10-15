@@ -58,7 +58,7 @@ builtins = dict(
             "<": lambda x, y: bool_fn(x < y),
             "<=": lambda x, y: bool_fn(x <= y),
             "!=": lambda x, y: bool_fn(x != y),
-            "==": lambda x, y: bool_fn(x == y),
+            "=": lambda x, y: bool_fn(x == y),
             ">=": lambda x, y: bool_fn(x >= y),
             ">": lambda x, y: bool_fn(x > y),
             "and": lambda x, y: bool_fn(x and y),
