@@ -24,13 +24,16 @@ def bool_fn(b):
 
 
 builtins = dict(
-    tuple(({Symbol(k): v for k, v in ({
-        "#t": Symbol("#t"),
-        "#f": Symbol("#f"),
-        "nil": List(),
-    }).items()}).items()) +
-    tuple(({Symbol(k): Procedure(v, List(
-        Symbol("x"))) for k, v in ({
+    tuple(({
+        Symbol(k):
+        v for k, v in ({
+            "#t": Symbol("#t"),
+            "#f": Symbol("#f"),
+            "nil": List(),
+        }).items()}).items()) +
+    tuple(({
+        Symbol(k):
+        Procedure(v, List(Symbol("x"))) for k, v in ({
             "print": lambda x: print(x) or Symbol("#f"),
             "panic": lambda x: print(x, file=sys.stderr) or sys.exit(1),
             "true?": lambda x: bool_fn(x),
@@ -46,8 +49,9 @@ builtins = dict(
             "car": lambda x: x[0],
             "cdr": lambda x: List(*x[1:]),
         }).items()}).items()) +
-    tuple(({Symbol(k): Procedure(v, List(
-        Symbol("x"), Symbol("y"))) for k, v in ({
+    tuple(({
+        Symbol(k):
+        Procedure(v, List(Symbol("x"), Symbol("y"))) for k, v in ({
             "+": lambda x, y: x + y,
             "-": lambda x, y: x - y,
             "*": lambda x, y: x * y,
@@ -64,7 +68,8 @@ builtins = dict(
             "and": lambda x, y: bool_fn(x and y),
             "or": lambda x, y: bool_fn(x or y),
         }).items()}).items()) +
-    tuple(({Symbol(k): Procedure(v, List(
-        Symbol("fn"), Symbol("xs"))) for k, v in ({
+    tuple(({
+        Symbol(k):
+        Procedure(v, List(Symbol("fn"), Symbol("xs"))) for k, v in ({
             "map": lambda fn, xs: List(*map(fn, xs)),
         }).items()}).items()))

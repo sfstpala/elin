@@ -159,8 +159,8 @@ class Procedure:
     def __call__(self, *args):
         if len(self.argn) != len(args):
             raise TypeError(
-                ("procedure() takes {} positional "
-                 "argument{} but {} were given").format(
-                     len(self.argn), "s" if len(self.argn) != 1 else "",
-                     len(args)))
+                ("procedure() takes {} positional argument{} but "
+                 "{} were given").format(len(self.argn), "s" if
+                                         len(self.argn) != 1 else "",
+                                         len(args)))
         return self.function(*args)
